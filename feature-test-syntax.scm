@@ -3,11 +3,14 @@
 ;; always return values.  However if API were different this approach is
 ;; not even possible.
 
-(use setup-api) ;; version>=?
+(module feature-test-syntax ()
 
-(let ((omit (if (version>=? (chicken-version) "4.6.7")
-                '(##sys#values)
-                ''(##core#undefined))))
+(import scheme)
+(import (chicken base))
+(import (chicken read-syntax))
+(import (chicken platform))
+
+(let ((omit '(##sys#values)))
   (set-sharp-read-syntax!
    #\+ (lambda (p) (let ((ft (read p))
                     (body (read p)))
@@ -32,3 +35,5 @@
                                 ,(if (null? alt)
                                      omit
                                      (list 'quote (car alt))))))))))
+
+)
