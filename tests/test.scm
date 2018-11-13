@@ -1,6 +1,6 @@
 ;; csc -X feature-test-syntax test.scm
 
-(use test)
+(require-extension test)
 
 (test "#+"
       '(a b)
