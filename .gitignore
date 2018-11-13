@@ -6,3 +6,5 @@
 *.build.sh
 *.install.sh
 *~
+
+tests/test
