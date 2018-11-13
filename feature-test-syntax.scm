@@ -1,8 +1,3 @@
-;; We can't always use ##sys#values, because old chicken does not understand
-;; it and we are overwriting #+ .  If we did not overwrite #+ then we could
-;; always return values.  However if API were different this approach is
-;; not even possible.
-
 (module feature-test-syntax ()
 
 (import scheme)
@@ -10,7 +5,7 @@
 (import (chicken read-syntax))
 (import (chicken platform))
 
-(let ((omit '(##sys#values)))
+(let ((omit '(values)))   ;; (values) requires Chicken >= 4.6.7.
   (set-sharp-read-syntax!
    #\+ (lambda (p) (let ((ft (read p))
                     (body (read p)))
