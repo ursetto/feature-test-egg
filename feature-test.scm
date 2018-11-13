@@ -1,24 +1,33 @@
-
 (module feature-test
  ((register-foreign-features R! U!)
   declare-foreign-features define-foreign-features
   declaration-prefix registration-prefix)
 
-(import scheme chicken)
+(import scheme)
+(cond-expand
+ (chicken-4
+  (import chicken))
+ (else
+  (import (chicken format))
+  (import (chicken syntax))
+  (begin-for-syntax
+   (import (chicken string))
+   (import (chicken format)))))
 
 (define-syntax register-foreign-feature
-  (lambda (e r c)
-    (let ((F (->string (cadr e))))
-      (let ((%begin (r 'begin))
-            (%define-foreign-variable (r 'define-foreign-variable))
-            (%bool (r 'bool)) (%quote (r 'quote))
-            (%if (r 'if)) (%R! (r 'R!)) (%U! (r 'U!)))
-        (let* ((cvar (string-append *ft:declaration-prefix* F))
-               (var (string->symbol cvar))
-               (ft (string->symbol (string-append *ft:registration-prefix* F))))
-          `(,%begin (,%define-foreign-variable ,var ,%bool ,cvar)
-                    ((,%if ,var ,%R! ,%U!)
-                     (,%quote ,ft))))))))
+  (er-macro-transformer
+   (lambda (e r c)
+     (let ((F (->string (cadr e))))
+       (let ((%begin (r 'begin))
+             (%define-foreign-variable (r 'define-foreign-variable))
+             (%bool (r 'bool)) (%quote (r 'quote))
+             (%if (r 'if)) (%R! (r 'R!)) (%U! (r 'U!)))
+         (let* ((cvar (string-append *ft:declaration-prefix* F))
+                (var (string->symbol cvar))
+                (ft (string->symbol (string-append *ft:registration-prefix* F))))
+           `(,%begin (,%define-foreign-variable ,var ,%bool ,cvar)
+                     ((,%if ,var ,%R! ,%U!)
+                      (,%quote ,ft)))))))))
 (define-syntax declare-foreign-feature
   (er-macro-transformer
    (lambda (e r c)
@@ -44,13 +53,15 @@
                     (begin (declare-foreign-features args ...)
                            (register-foreign-features args ...)))))
 (define-syntax declaration-prefix
-  (lambda (e r c)
-    (set! *ft:declaration-prefix* (->string (cadr e)))
-    `(,(r 'begin))))
+  (er-macro-transformer
+   (lambda (e r c)
+     (set! *ft:declaration-prefix* (->string (cadr e)))
+     `(,(r 'begin)))))
 (define-syntax registration-prefix
-  (lambda (e r c)
-    (set! *ft:registration-prefix* (->string (cadr e)))
-    `(,(r 'begin))))
+  (er-macro-transformer
+   (lambda (e r c)
+     (set! *ft:registration-prefix* (->string (cadr e)))
+     `(,(r 'begin)))))
 
 (define *declaration-prefix* "HAVE_")
 (define *registration-prefix* "")

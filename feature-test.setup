@@ -11,10 +11,14 @@
    (require-at-runtime feature-test)
  ))
 
+(compile -s -O2 -d0 feature-test-syntax.scm -J)
+(compile -s -O2 -d0 feature-test-syntax.import.scm)
+
 ;; deliberately skip compilation of feature-test-syntax
 
 (install-extension
  'feature-test-syntax
- '("feature-test-syntax.scm")
+ '("feature-test-syntax.so" "feature-test-syntax.import.so")
  '((version "0.1.1")
+   (syntax)
  ))
