@@ -4,11 +4,15 @@
   declaration-prefix registration-prefix)
 
 (import scheme)
-(import (chicken format))
-(import (chicken syntax))
-(begin-for-syntax
- (import (chicken string))
- (import (chicken format)))
+(cond-expand
+ (chicken-4
+  (import chicken))
+ (else
+  (import (chicken format))
+  (import (chicken syntax))
+  (begin-for-syntax
+   (import (chicken string))
+   (import (chicken format)))))
 
 (define-syntax register-foreign-feature
   (er-macro-transformer

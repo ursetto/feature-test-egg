@@ -1,9 +1,13 @@
 (module feature-test-syntax ()
-
 (import scheme)
-(import (chicken base))
-(import (chicken read-syntax))
-(import (chicken platform))
+
+(cond-expand
+ (chicken-4
+  (import chicken))
+ (else
+  (import (chicken base))
+  (import (chicken read-syntax))
+  (import (chicken platform))))
 
 (let ((omit '(values)))   ;; (values) requires Chicken >= 4.6.7.
   (set-sharp-read-syntax!
