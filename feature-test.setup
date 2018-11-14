@@ -6,7 +6,7 @@
 (install-extension
  'feature-test
  '("feature-test.so" "feature-test.import.so")
- '((version "0.1.1")
+ '((version "0.2.0")
    (syntax)
    (require-at-runtime feature-test)
  ))
@@ -19,6 +19,6 @@
 (install-extension
  'feature-test-syntax
  '("feature-test-syntax.so" "feature-test-syntax.import.so")
- '((version "0.1.1")
+ '((version "0.2.0")
    (syntax)
  ))
